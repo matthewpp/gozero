@@ -32,6 +32,9 @@ type person struct {
 // }
 
 func main() {
+	//Pointer
+	//Zero value
+
 	p := person{
 		name: "neng",
 		age:  100,
