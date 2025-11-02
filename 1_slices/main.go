@@ -6,6 +6,7 @@ import "fmt"
 
 func main() {
 
+	fmt.Println("matthew")
 	/* initialize array */
 	// var a [5]int
 	// fmt.Println("emp:", a)

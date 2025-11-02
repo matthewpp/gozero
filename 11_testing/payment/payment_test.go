@@ -1,14 +1,15 @@
 package payment_test
 
 import (
-	"gozero/chonlatee/payment"
 	"testing"
+
+	"gozero/chonlatee/payment"
 )
 
 func TestPayment_PayWithCreditCard(t *testing.T) {
 	t.Run("not accept 001 card", func(t *testing.T) {
 		p := payment.Payment{}
-		err := p.PayWithCreditCard(500, "00123456")
+		err := p.PayWithCreditCard("00123456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}
@@ -16,7 +17,7 @@ func TestPayment_PayWithCreditCard(t *testing.T) {
 
 	t.Run("not accept 003 card", func(t *testing.T) {
 		p := payment.Payment{}
-		err := p.PayWithCreditCard(500, "00323456")
+		err := p.PayWithCreditCard("00323456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}
@@ -24,7 +25,7 @@ func TestPayment_PayWithCreditCard(t *testing.T) {
 
 	t.Run("not accept james bond card", func(t *testing.T) {
 		p := payment.Payment{}
-		err := p.PayWithCreditCard(500, "00723456")
+		err := p.PayWithCreditCard("00723456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}

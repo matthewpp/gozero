@@ -16,9 +16,9 @@ func (p Payment) Pay(v int) error {
 	return pay(v)
 }
 
-func (p Payment) PayWithCreditCard(v int, number string) error {
+func (p Payment) PayWithCreditCard(number string) error {
 
-	return paymentWithCreditCard(v, number)
+	return paymentWithCreditCard(number)
 }
 
 func pay(v int) error {
@@ -34,7 +34,7 @@ func pay(v int) error {
 	return nil
 }
 
-func paymentWithCreditCard(v int, number string) error {
+func paymentWithCreditCard(number string) error {
 	if strings.HasPrefix(number, "001") {
 		return fmt.Errorf("we not accept card start with 001")
 	}

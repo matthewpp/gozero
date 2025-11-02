@@ -2,35 +2,46 @@ package payment
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPaymentWithCreditCard(t *testing.T) {
 	t.Run("not accept 001 card", func(t *testing.T) {
-		// p := Payment{}
-		// p.PayWithCreditCard(500, "00123456")
-		err := paymentWithCreditCard(500, "00123456")
+		err := paymentWithCreditCard("00123456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}
+
+		// Expected
+		assert.Error(t, err)
+		assert.Equal(t, "we not accept card start with 001", err.Error())
 	})
 
 	t.Run("not accept 003 card", func(t *testing.T) {
-		err := paymentWithCreditCard(500, "00323456")
+		err := paymentWithCreditCard("00323456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}
+
+		// Expected
+		assert.Error(t, err)
+		assert.Equal(t, "we not accept card start with 003", err.Error())
 	})
 
 	t.Run("not accept james bond card", func(t *testing.T) {
-		err := paymentWithCreditCard(500, "00723456")
+		err := paymentWithCreditCard("00723456")
 		if err == nil {
 			t.Errorf("err must not nil")
 		}
+
+		// Expected
+		assert.Error(t, err)
+		assert.Equal(t, "we not accept card from james bond", err.Error())
 	})
 }
 
 func TestPay(t *testing.T) {
-
 	testCases := []struct {
 		name      string
 		price     int
