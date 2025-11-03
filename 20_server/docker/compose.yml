@@ -1,0 +1,9 @@
+services:
+  gozero_db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gozero_user
+      POSTGRES_PASSWORD: gozero_password
+      POSTGRES_DB: gozero_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
