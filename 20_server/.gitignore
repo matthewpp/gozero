@@ -22,7 +22,6 @@ __debug*
 go.work
 
 # IDE files
-.vscode/
 .idea/
 *.swp
 *.swo

@@ -1,6 +1,6 @@
 module gozero/chonlatee
 
-go 1.22.7
+go 1.25.3
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
