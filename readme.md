@@ -121,6 +121,13 @@ Expected output example:
 go version go1.23.2 darwin/arm64
 ```
 
+Add GOPATH to .zshrc
+
+```.zshrc
+# GOPATH
+export PATH=$(go env GOPATH)/bin:${PATH}
+```
+
 ### 2. VSCode extension
 
 Install from this link
