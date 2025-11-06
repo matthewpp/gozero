@@ -1,3 +1,3 @@
-module chonlatee/gozero
+module exam
 
 go 1.22.7
