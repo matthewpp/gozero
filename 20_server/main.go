@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
@@ -191,8 +192,9 @@ func main() {
 		Handler: router,
 	}
 
+	// Start server in a goroutine
 	go func() {
-		// service connections
+		slog.InfoContext(ctx, fmt.Sprintf("Server start listening at %s", addr))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.ErrorContext(ctx, "listen and start server error", slog.String("error", err.Error()))
 			return

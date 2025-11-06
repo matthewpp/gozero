@@ -73,12 +73,12 @@ func workerPool() {
 		//		close(jobs) // panic send close channel
 		//	}
 		//}
-		close(jobs)
+	}
+	close(jobs)
 
-		//for a := 1; a <= 11; a++ { // dead lock
-		for a := 1; a <= numJobs; a++ {
-			<-results
-		}
+	//for a := 1; a <= 11; a++ { // dead lock
+	for a := 1; a <= numJobs; a++ {
+		<-results
 	}
 }
 
