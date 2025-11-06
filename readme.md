@@ -147,6 +147,6 @@ brew install make
 
 OR
 
-- Install podman follow this instruction https://github.com/containers/podman/blob/main/docs/tutorials/podman-for-windows.md
+- Install podman follow this instruction https://podman.io/docs/installation#macos
 
 **You're all set on mac !**
