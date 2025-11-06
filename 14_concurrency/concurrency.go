@@ -80,6 +80,8 @@ func workerPool() {
 	for a := 1; a <= numJobs; a++ {
 		<-results
 	}
+
+	fmt.Println("all jobs processed")
 }
 
 func selectConcurrency() {
