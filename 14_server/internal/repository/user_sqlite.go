@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log/slog"
 
+	"gozero/server/internal/errs"
 	"gozero/server/internal/model"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -48,8 +49,10 @@ func (r *userSQLiteRepository) GetByID(ctx context.Context, id int64) (*model.Us
 	if err != nil {
 		if err == sql.ErrNoRows {
 			slog.InfoContext(ctx, "User not found in SQLite", "id", id)
-			return nil, err
+			// return nil, err
+			return nil, errs.ErrInvalidUserID
 		}
+
 		slog.ErrorContext(ctx, "Failed to get user by ID from SQLite", "error", err, "id", id)
 		return nil, err
 	}

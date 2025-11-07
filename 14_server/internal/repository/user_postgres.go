@@ -2,6 +2,9 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"errors"
+	"gozero/server/internal/errs"
 	"gozero/server/internal/model"
 	"log/slog"
 
@@ -39,6 +42,11 @@ func (r *userPostgresqlRepository) GetByID(ctx context.Context, id int64) (*mode
 	var user model.User
 	err := r.db.QueryRow(ctx, "SELECT id, name, email FROM users WHERE id = $1", id).Scan(&user.ID, &user.Name, &user.Email)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			slog.InfoContext(ctx, "User not found in PostgreSQL", "id", id)
+			return nil, errors.Join(errs.ErrInvalidUserID, err)
+		}
+
 		slog.ErrorContext(ctx, "Failed to get user by ID", "error", err, "id", id)
 		return nil, err
 	}
