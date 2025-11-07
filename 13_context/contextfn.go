@@ -7,6 +7,34 @@ import (
 	"time"
 )
 
+func contextTimeout() {
+	/* timeout context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	select {
+	case <-time.After(10 * time.Second):
+		fmt.Println("operation completed.")
+	case <-ctx.Done():
+		fmt.Println("Operation time out:", ctx.Err())
+	}
+}
+
+func cancelContext() {
+	/* cancel context */
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go worker(ctx)
+
+	time.Sleep(3 * time.Second)
+
+	fmt.Println("Main: Sending cancel signal to worker")
+	cancel()
+
+	time.Sleep(1 * time.Second)
+	fmt.Println("Main: Done")
+}
+
 func worker(ctx context.Context) {
 	for {
 		select {
@@ -20,6 +48,18 @@ func worker(ctx context.Context) {
 	}
 }
 
+func valueContext() {
+	/* context with value */
+	ctx := context.Background()
+
+	userIDKey := key("userID")
+	value := "123"
+
+	ctx = context.WithValue(ctx, userIDKey, value)
+
+	showCTXVal(ctx, userIDKey)
+}
+
 type key string
 
 func showCTXVal(ctx context.Context, userIDKey key) {
@@ -31,8 +71,11 @@ func showCTXVal(ctx context.Context, userIDKey key) {
 }
 
 func httpRequest() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	/* context http cancel */
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	tt := time.Now()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://httpbin.org/delay/3", nil)
 	if err != nil {
@@ -46,6 +89,8 @@ func httpRequest() {
 		return
 	}
 	defer resp.Body.Close()
+
+	fmt.Println("Request completed in:", time.Since(tt))
 
 	fmt.Println("Response status code:", resp.StatusCode)
 }

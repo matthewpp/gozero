@@ -1,55 +1,15 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"time"
-)
-
 /*
 	context package in go provides a way to carry deadlines, cancellation signals and other
 	request-scoped value across API boundaries and between processes.
 */
 
 func main() {
-
-	/* timeout context */
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
-	defer cancel()
-
-	select {
-	case <-time.After(10 * time.Second):
-		fmt.Println("operation completed.")
-	case <-ctx.Done():
-		fmt.Println("Operation time out:", ctx.Err())
-	}
-
-	/* cancel context */
-
-	// ctx, cancel := context.WithCancel(context.Background())
-
-	// go worker(ctx)
-
-	// time.Sleep(3 * time.Second)
-
-	// fmt.Println("Main: Sending cancel signal to worker")
-	// cancel()
-
-	// time.Sleep(1 * time.Second)
-	// fmt.Println("Main: Done")
-
-	/* context with value */
-	// ctx := context.Background()
-
-	// userIDKey := key("userID")
-	// value := "123"
-
-	// ctx = context.WithValue(ctx, userIDKey, value)
-
-	// showCTXVal(ctx, userIDKey)
-
-	/* context http cancel */
-	httpRequest()
+	//contextTimeout()
+	//cancelContext()
+	//valueContext()
+	//httpRequest()
 }
 
 /*
