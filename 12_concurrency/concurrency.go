@@ -8,7 +8,7 @@ import (
 
 func withOutGoRoutine() {
 	/* with out go routine */
-	for _, v := range []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"} {
+	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
 		fmt.Printf("val is: %s\n", v)
 		time.Sleep(time.Millisecond * 500)
 	}
@@ -16,7 +16,7 @@ func withOutGoRoutine() {
 
 func goRoutineWithoutWaitGroup() {
 	/* go routine without wait group */
-	for _, v := range []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"} {
+	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
 		go func() {
 			fmt.Printf("val is: %s\n", v)
 			time.Sleep(time.Millisecond * 500)
@@ -29,7 +29,7 @@ func goroutineWithSyncWaitGroup() {
 	var wg sync.WaitGroup
 
 	wg.Add(10)
-	for _, v := range []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"} {
+	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
 		go func() {
 			fmt.Printf("val is: %s\n", v)
 			time.Sleep(time.Millisecond * 500)
