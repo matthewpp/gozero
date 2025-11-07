@@ -137,8 +137,3 @@ func (r *userSQLiteRepository) List(ctx context.Context) ([]*model.User, error) 
 	slog.InfoContext(ctx, "Users listed successfully from SQLite", "count", len(users))
 	return users, nil
 }
-
-func (r *userSQLiteRepository) Close() error {
-	slog.Info("Closing SQLite database connection")
-	return r.db.Close()
-}

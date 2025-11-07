@@ -163,7 +163,11 @@ func main() {
 		return
 	}
 	defer func() {
-		sqliteDb.Close()
+		err := sqliteDb.Close()
+		if err != nil {
+			slog.ErrorContext(ctx, "Failed to close SQLite connection", slog.String("error", err.Error()))
+			os.Exit(1)
+		}
 		slog.InfoContext(ctx, "SQLite database connection closed")
 	}()
 
@@ -203,18 +207,19 @@ func main() {
 
 	// Graceful shutdown
 	quit := make(chan os.Signal, 1)
+	// Stop the signal from propagating (prevents exit code 130)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
+	sig := <-quit
 
-	slog.InfoContext(ctx, "Shutting down server")
+	slog.InfoContext(ctx, "Received shutdown signal", slog.String("signal", sig.String()))
 
 	// Perform any necessary cleanup here
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(shutdownCtx); err != nil {
 		slog.ErrorContext(ctx, "Server Shutdown", slog.String("error", err.Error()))
-		return
+		os.Exit(1)
 	}
 
-	slog.InfoContext(ctx, "Server exiting")
+	slog.InfoContext(ctx, "Server exiting gracefully")
 }

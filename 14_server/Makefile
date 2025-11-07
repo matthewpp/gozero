@@ -2,7 +2,7 @@
 .PHONY: run build test mockgen migrate-sqlite migrate-postgres db-up db-down db-restart db-logs
 
 run:
-	go run main.go
+	@go run main.go
 
 build:
 	go build -o server main.go
