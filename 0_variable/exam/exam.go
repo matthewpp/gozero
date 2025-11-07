@@ -5,6 +5,8 @@ import (
 )
 
 func BasicExam() {
+	fmt.Println("")
+	fmt.Println("--- BasicExam ---")
 	var a int = 10
 	fmt.Println("Value of a:", a)
 
@@ -31,6 +33,8 @@ func BasicExam() {
 }
 
 func ExampleVariable() {
+	fmt.Println("")
+	fmt.Println("--- ExampleVariable ---")
 
 	// example var
 	// bool
@@ -63,6 +67,8 @@ func ExampleVariable() {
 }
 
 func ZeroValueExam() {
+	fmt.Println("")
+	fmt.Println("--- ZeroValueExam ---")
 	var a int
 	var b float64
 	var c string
@@ -75,13 +81,17 @@ func ZeroValueExam() {
 }
 
 func ConvertExam() {
+	fmt.Println("")
+	fmt.Println("--- ConvertExam ---")
 	i := 42
 	f := float64(i)
 	u := uint(f)
-	fmt.Println(, y, z)
+	fmt.Println(i, f, u)
 }
 
 func TypeInferenceExam() {
+	fmt.Println("")
+	fmt.Println("--- TypeInferenceExam ---")
 	a := 10
 	b := 20.5
 	c := "Golang"
@@ -93,7 +103,9 @@ func TypeInferenceExam() {
 	fmt.Printf("Type of d: %T, Value: %v\n", d, d)
 }
 
-func ConstantExame() {
+func ConstantExam() {
+	fmt.Println("")
+	fmt.Println("--- ConstantExam ---")
 	const Pi = 3.14
 	const Greeting = "Hello, World!"
 
@@ -102,6 +114,8 @@ func ConstantExame() {
 }
 
 func PointerExam() {
+	fmt.Println("")
+	fmt.Println("--- PointerExam ---")
 	var a int = 42
 	var p *int = &a
 
@@ -110,5 +124,5 @@ func PointerExam() {
 	fmt.Println("Value at address p:", *p)
 
 	*p = 100
-	fmt.Println("New value of a:", a)	
+	fmt.Println("New value of a:", a)
 }
