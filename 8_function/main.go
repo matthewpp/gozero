@@ -1,62 +1,13 @@
 package main
 
+import (
+	"exercise/exam"
+	"fmt"
+)
+
 /* create custom type function */
-type keep func(v int) bool
-
-func filter(l []int, fn keep) []int {
-	var r []int
-	for _, v := range l {
-		if fn(v) {
-			r = append(r, v)
-		}
-	}
-	return r
-}
-
-/* no need custom type */
-func filterV2(l []int, fn func(v int) bool) []int {
-	var r []int
-	for _, v := range l {
-		if fn(v) {
-			r = append(r, v)
-		}
-	}
-	return r
-}
-
-type server struct {
-	readTimeout  int
-	writeTimeout int
-	idleTimeout  int
-	addr         string
-}
 
 /*optional pattern */
-// type option func(s *server)
-
-// func changeReadTimeout() option {
-// 	return func(s *server) {
-// 		s.readTimeout = 10
-// 	}
-// }
-
-// func changeWriteTimeout(v int) option {
-// 	return func(s *server) {
-// 		s.writeTimeout = v
-// 	}
-// }
-
-// func changeReadTimeout() func(s *server) {
-// 	return func(s *server) {
-// 		s.readTimeout = 10
-// 	}
-// }
-
-// func changeWriteTimeout(v int) func(s *server) {
-// 	return func(s *server) {
-// 		s.writeTimeout = v
-// 	}
-// }
 
 func seq() func() int {
 	i := 0
@@ -74,56 +25,46 @@ func add(v int) func(int) int {
 
 func main() {
 
-	// even := func(val int) bool {
-	// 	return val%2 == 0
-	// }
+	s := exam.ToString(123)
+	fmt.Printf("s %s\n", s)
 
-	// l := filter([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, even)
+	l := exam.Filter([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, exam.IsEven)
+	fmt.Println("---- Filter 1 ------")
+	for _, v := range l {
+		fmt.Printf("v %v", v)
 
-	// l := filterV2([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, even)
+	}
+	fmt.Println("")
 
-	// l := filterV2([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, func(v int) bool {
-	// 	return v%2 == 0
-	// })
+	l2 := exam.FilterV2([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, exam.IsEven)
+	fmt.Println("---- Filter 2 ------")
+	for _, v := range l2 {
+		fmt.Printf("v %v", v)
+	}
+	fmt.Println("")
 
-	// for _, v := range l {
-	// 	fmt.Printf("v %v\n", v)
-	// }
+	l3 := exam.FilterV2([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, func(v int) bool {
+		return v%2 == 0
+	})
+	fmt.Println("---- Filter 3 ------")
+	for _, v := range l3 {
+		fmt.Printf("v %v", v)
+	}
+	fmt.Println("")
 
-	// next := seq()
-	// fmt.Printf("%d\n", next())
-	// fmt.Printf("%d\n", next())
-	// fmt.Printf("%d\n", next())
-
-	// next = seq()
-	// fmt.Printf("%d\n", next())
-	// fmt.Printf("%d\n", next())
-	// fmt.Printf("%d\n", next())
-
-	// add10 := add(10)
-	// fmt.Printf("10 + 5 = %d\n", add10(5))
-	// fmt.Printf("10 + 3 = %d\n", add10(3))
-	// fmt.Printf("10 + 2 = %d\n", add10(2))
-
-	// s := NewServer(changeReadTimeout(), changeWriteTimeout(20))
-	// fmt.Printf("server %+v\n", s)
+	server := exam.NewServer(changeReadTimeout(), changeWriteTimeout(20))
+	fmt.Printf("server %+v\n", server)
 
 }
 
-// func NewServer(options ...option) *server {
-// 	svr := &server{}
-// 	for _, o := range options {
-// 		o(svr)
-// 	}
+func changeReadTimeout() exam.Option {
+	return func(s *exam.Server) {
+		s.ReadTimeout = 10
+	}
+}
 
-// 	return svr
-// }
-
-// func NewServer(options ...func(*server)) *server {
-// 	svr := &server{}
-// 	for _, o := range options {
-// 		o(svr)
-// 	}
-
-// 	return svr
-// }
+func changeWriteTimeout(v int) exam.Option {
+	return func(s *exam.Server) {
+		s.WriteTimeout = v
+	}
+}
