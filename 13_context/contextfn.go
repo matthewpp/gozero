@@ -5,18 +5,34 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func contextTimeout() {
 	/* timeout context */
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	select {
-	case <-time.After(10 * time.Second):
+	//case <-time.After(2 * time.Second):
+	case <-time.After(4 * time.Second):
 		fmt.Println("operation completed.")
 	case <-ctx.Done():
 		fmt.Println("Operation time out:", ctx.Err())
+	}
+}
+
+func worker(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("Worker: Stopping work due to cancel signal")
+			return
+		default:
+			fmt.Println("Worker Working....")
+			time.Sleep(500 * time.Millisecond)
+		}
 	}
 }
 
@@ -35,16 +51,13 @@ func cancelContext() {
 	fmt.Println("Main: Done")
 }
 
-func worker(ctx context.Context) {
-	for {
-		select {
-		case <-ctx.Done():
-			fmt.Println("Worker: Stopping work due to cancel signal")
-			return
-		default:
-			fmt.Println("Worker Working....")
-			time.Sleep(500 * time.Millisecond)
-		}
+type key string
+
+func showCTXVal(ctx context.Context, userIDKey key) {
+	if userID, ok := ctx.Value(userIDKey).(string); ok {
+		fmt.Println("User ID:", userID)
+	} else {
+		fmt.Println("User ID not found in context")
 	}
 }
 
@@ -60,19 +73,57 @@ func valueContext() {
 	showCTXVal(ctx, userIDKey)
 }
 
-type key string
+func processTask(ctx context.Context, id int, shouldFail bool) error {
+	for i := 0; i < 10; i++ {
+		// เช็คว่า context ถูก cancel หรือไม่
+		select {
+		case <-ctx.Done():
+			fmt.Printf("Task %d: Cancelled at step %d\n", id, i)
+			return ctx.Err()
+		default:
+		}
 
-func showCTXVal(ctx context.Context, userIDKey key) {
-	if userID, ok := ctx.Value(userIDKey).(string); ok {
-		fmt.Println("User ID:", userID)
+		// จำลองการทำงาน
+		time.Sleep(500 * time.Millisecond)
+		fmt.Printf("Task %d: Step %d\n", id, i)
+
+		// จำลอง error
+		if shouldFail && i == 3 {
+			return fmt.Errorf("task %d failed at step %d", id, i)
+		}
+	}
+	return nil
+}
+
+func handleErrorGroupWithContext() {
+	g, ctx := errgroup.WithContext(context.Background())
+
+	// Task 1: จะทำงานปกติ
+	g.Go(func() error {
+		return processTask(ctx, 1, false)
+	})
+
+	// Task 2: จะ error ที่ step 3
+	g.Go(func() error {
+		return processTask(ctx, 2, true)
+	})
+
+	// Task 3: จะถูก cancel เมื่อ Task 2 error
+	g.Go(func() error {
+		return processTask(ctx, 3, false)
+	})
+
+	// รอและแสดงผล
+	if err := g.Wait(); err != nil {
+		fmt.Printf("\n❌ Error occurred: %v\n", err)
 	} else {
-		fmt.Println("User ID not found in context")
+		fmt.Printf("\n✅ All tasks completed\n")
 	}
 }
 
 func httpRequest() {
 	/* context http cancel */
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
 	tt := time.Now()

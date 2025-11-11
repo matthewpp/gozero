@@ -1,10 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"runtime"
-)
-
 func main() {
 
 	/*
@@ -29,17 +24,13 @@ func main() {
 	// channel use when you want to communicate between goroutine - ( use with caution, IMHO: complex to read and  debug for beginner).
 
 	/* -- check number of cpu --*/
-	fmt.Printf("%d\n", runtime.NumCPU())
-
-	/* sync wait group */
+	//fmt.Printf("%d\n", runtime.NumCPU())
 
 	//withOutGoRoutine()
-
-	goRoutineWithoutWaitGroup()
-
-	//goroutineWithSyncWaitGroup()
-
-	workerPool()
-
-	//selectConcurrency()
+	//goRoutineWithoutWaitGroup()
+	//goRoutineWithSyncWaitGroup()
+	//goRoutineWithErrorGroup()
+	//workerPool()
+	selectConcurrency()
+	//breakOuterLoop()
 }

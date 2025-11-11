@@ -10,6 +10,8 @@ func main() {
 	//cancelContext()
 	//valueContext()
 	//httpRequest()
+	handleErrorGroupWithContext()
+
 }
 
 /*

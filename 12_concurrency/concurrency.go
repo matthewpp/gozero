@@ -2,15 +2,18 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func withOutGoRoutine() {
 	/* with out go routine */
 	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
-		fmt.Printf("val is: %s\n", v)
 		time.Sleep(time.Millisecond * 500)
+		fmt.Printf("val is: %s\n", v)
 	}
 }
 
@@ -18,25 +21,57 @@ func goRoutineWithoutWaitGroup() {
 	/* go routine without wait group */
 	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
 		go func() {
+			sleepRandom := rand.Intn(100)
+			time.Sleep(time.Millisecond * (500 + time.Duration(sleepRandom)))
 			fmt.Printf("val is: %s\n", v)
-			time.Sleep(time.Millisecond * 500)
 		}()
 	}
+
+	time.Sleep(550 * time.Millisecond)
 }
 
-func goroutineWithSyncWaitGroup() {
+func goRoutineWithSyncWaitGroup() {
 	/* goroutine with sync wait group */
+	// with no handle error from goroutine
 	var wg sync.WaitGroup
 
-	wg.Add(10)
+	//wg.Add(11) // for show deadlock or wait forever
 	for _, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
 		go func() {
+			wg.Add(1)
+			sleepRandom := rand.Intn(100)
+			time.Sleep(time.Millisecond * (500 + time.Duration(sleepRandom)))
 			fmt.Printf("val is: %s\n", v)
-			time.Sleep(time.Millisecond * 500)
+
 			wg.Done()
 		}()
 	}
+
 	wg.Wait()
+}
+
+func goRoutineWithErrorGroup() {
+	/* goroutine with error group */
+	// https://pkg.go.dev/golang.org/x/sync/errgroup
+	// with handle error from goroutine
+	var eg errgroup.Group
+
+	for i, v := range []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} {
+		eg.Go(func() error {
+			sleepRandom := rand.Intn(500)
+			time.Sleep(time.Millisecond * (500 + time.Duration(sleepRandom)))
+			fmt.Printf("val is: %s\n", v)
+			if i%2 == 0 {
+				return nil
+			} else {
+				return fmt.Errorf("some error happened for val %s and time %v \n", v, sleepRandom)
+			}
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		fmt.Println("error:", err)
+	}
 }
 
 func worker(id int, jobs <-chan job, results chan<- string) {
@@ -78,8 +113,9 @@ func workerPool() {
 
 	//for a := 1; a <= 11; a++ { // dead lock
 	for a := 1; a <= numJobs; a++ {
-		<-results
+		fmt.Println(<-results)
 	}
+	close(results)
 
 	fmt.Println("all jobs processed")
 }
@@ -126,6 +162,23 @@ outerloop:
 			if v1 && v2 {
 				fmt.Printf("all finish\n")
 				break outerloop
+			}
+		}
+	}
+
+	fmt.Println("end")
+}
+
+func breakOuterLoop() {
+outerloop:
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			for k := 0; k < 10; k++ {
+				fmt.Printf("i=%d j=%d k=%d\n", i, j, k)
+				if i == 5 && j == 5 && k == 5 {
+					fmt.Printf("break all loop\n")
+					break outerloop
+				}
 			}
 		}
 	}
