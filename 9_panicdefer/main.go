@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	for i := 0; i < 50; i++ {
 		fmt.Println(i)
 		if i == 10 {
@@ -17,6 +16,6 @@ func main() {
 		}
 	}
 
-	hello.TestDefer()
+	// hello.TestDefer()
 
 }

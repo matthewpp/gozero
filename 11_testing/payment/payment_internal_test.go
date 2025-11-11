@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -67,7 +68,7 @@ func TestPay(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			err := pay(tc.price)
-			if err != tc.expectErr {
+			if !errors.Is(err, tc.expectErr) {
 				t.Errorf("expect %v but got %v", tc.expectErr, err)
 			}
 		})

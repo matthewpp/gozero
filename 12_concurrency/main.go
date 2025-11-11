@@ -35,7 +35,7 @@ func main() {
 
 	//withOutGoRoutine()
 
-	//goRoutineWithoutWaitGroup()
+	goRoutineWithoutWaitGroup()
 
 	//goroutineWithSyncWaitGroup()
 

@@ -4,25 +4,36 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"gozero/chonlatee/payment/client"
 )
 
+var ErrBalanceNotEnough = errors.New("your balance is not enough")
 var ErrPayLower = errors.New("you pay lower price")
 var ErrPayOver = errors.New("you pay over price")
 
 type Payment struct {
+	BalanceClient client.Client
 }
 
 func (p Payment) Pay(v int) error {
 	return pay(v)
 }
 
-func (p Payment) PayWithCreditCard(number string) error {
+func (p Payment) PayWithCreditCard(cardNumber string) error {
+	balance, err := p.BalanceClient.GetBalance(cardNumber)
+	if err != nil {
+		return err
+	}
 
-	return paymentWithCreditCard(number)
+	if balance <= 10 {
+		return ErrBalanceNotEnough
+	}
+
+	return paymentWithCreditCard(cardNumber)
 }
 
 func pay(v int) error {
-
 	if v < 100 {
 		return ErrPayLower
 	}

@@ -5,9 +5,29 @@ import (
 	"fmt"
 )
 
+// static error variable
 var thirdErr = errors.New("this is third error")
 var OverPayment = errors.New("over price to pay")
 var LowerPayment = errors.New("lower price to pay")
+var PayOverErr = PayErr{
+	msg: "you pay over price",
+	Details: map[string]string{
+		"code": "002",
+	},
+}
+var PayLowErr = PayErr{
+	msg: "you pay lower price",
+	Details: map[string]string{
+		"code": "001",
+	},
+}
+
+var CreditLowErr = CreditErr{
+	msg: "your credit low",
+	Details: map[string]string{
+		"code": "001",
+	},
+}
 
 func FirstError() (string, error) {
 	return "", fmt.Errorf("this is first error")
@@ -63,7 +83,32 @@ func (p PayErr) Info() map[string]string {
 
 func NewPayment(v int) error {
 	if v < 100 {
-		return PayErr{
+		return PayLowErr
+	}
+
+	if v > 10000 {
+		return PayOverErr
+	}
+
+	return nil
+}
+
+type CreditErr struct {
+	msg     string
+	Details map[string]string
+}
+
+func (p CreditErr) Error() string {
+	return p.msg
+}
+
+func (p CreditErr) Info() map[string]string {
+	return p.Details
+}
+
+func Credit(v int) CreditErr {
+	if v < 100 {
+		return CreditErr{
 			msg: "you pay lower price",
 			Details: map[string]string{
 				"code": "001",
@@ -72,7 +117,7 @@ func NewPayment(v int) error {
 	}
 
 	if v > 10000 {
-		return PayErr{
+		return CreditErr{
 			msg: "you pay over price",
 			Details: map[string]string{
 				"code": "002",
@@ -80,5 +125,5 @@ func NewPayment(v int) error {
 		}
 	}
 
-	return nil
+	return CreditErr{}
 }
