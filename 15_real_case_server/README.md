@@ -6,7 +6,7 @@ A REST API server for User CRUD operations built with structured logging using G
 
 ............................................
 
-Create Plan CRUD feature
+Create CRUD for Plan feature
 
 ............................................
 
