@@ -80,6 +80,8 @@ func main() {
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
+
+	log.Println("End of main function")
 }
 
 func demoJSONUnmarshal() {
