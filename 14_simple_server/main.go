@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,8 +19,8 @@ import (
 //	}
 type User struct {
 	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Name  string `json:"name" binding:"required,min=1,max=100"`
+	Email string `json:"email" binding:"required,email"`
 }
 
 var (
@@ -49,7 +50,7 @@ func getUser(c *gin.Context) {
 func createUser(c *gin.Context) {
 	var user User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -79,4 +80,30 @@ func main() {
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
+}
+
+func demoJSONUnmarshal() {
+	jsonStr := `{"id":"1","name":"Alice","email":"alice@mail.com"}`
+
+	var user User
+	err := json.Unmarshal([]byte(jsonStr), &user)
+	if err != nil {
+		log.Printf("Failed to unmarshal JSON: %v", err)
+		return
+	}
+	log.Printf("Unmarshaled User: %+v\n", user)
+}
+
+func demoJsonMarshal() {
+	user := User{
+		ID:    "2",
+		Name:  "Bob",
+		Email: "bob@mail.com",
+	}
+	jsonBytes, err := json.Marshal(user)
+	if err != nil {
+		log.Printf("Failed to marshal User to JSON: %v", err)
+		return
+	}
+	log.Printf("Marshaled JSON: %s\n", string(jsonBytes))
 }
